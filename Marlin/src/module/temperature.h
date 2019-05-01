@@ -221,16 +221,10 @@ struct PIDHeaterInfo : public HeaterInfo {
     typedef heater_info_t bed_info_t;
   #endif
 #endif
-#if HAS_TEMP_CHAMBER
-  #if HAS_HEATED_CHAMBER
-    #if ENABLED(PIDTEMPCHAMBER)
-      typedef struct PIDHeaterInfo<PID_t> chamber_info_t;
-    #else
-      typedef heater_info_t chamber_info_t;
-    #endif
-  #else
-    typedef temp_info_t chamber_info_t;
-  #endif
+#if HAS_HEATED_CHAMBER
+  typedef heater_info_t chamber_info_t;
+#elif HAS_TEMP_CHAMBER
+  typedef temp_info_t chamber_info_t;
 #endif
 #if HAS_TEMP_PINDA
   typedef pinda_info_t pinda_info_t;
@@ -286,10 +280,6 @@ class Temperature {
     #if ENABLED(FAN_SOFT_PWM)
       static uint8_t soft_pwm_amount_fan[FAN_COUNT],
                      soft_pwm_count_fan[FAN_COUNT];
-    #endif
-
-    #if ENABLED(BABYSTEPPING)
-      static volatile int16_t babystepsTodo[3];
     #endif
 
     #if ENABLED(PREVENT_COLD_EXTRUSION)
@@ -365,9 +355,7 @@ class Temperature {
       #if WATCH_CHAMBER
         static heater_watch_t watch_chamber;
       #endif
-      #if DISABLED(PIDTEMPCHAMBER)
-        static millis_t next_chamber_check_ms;
-      #endif
+      static millis_t next_chamber_check_ms;
       #ifdef CHAMBER_MINTEMP
         static int16_t mintemp_raw_CHAMBER;
       #endif
@@ -693,7 +681,7 @@ class Temperature {
     /**
      * The software PWM power for a heater
      */
-    static int getHeaterPower(const int heater);
+    static int16_t getHeaterPower(const int8_t heater);
 
     /**
      * Switch off all heaters, set all target temperatures to 0
@@ -723,10 +711,6 @@ class Temperature {
         }
       #endif
 
-    #endif
-
-    #if ENABLED(BABYSTEPPING)
-      static void babystep_axis(const AxisEnum axis, const int16_t distance);
     #endif
 
     #if ENABLED(PROBING_HEATERS_OFF)
