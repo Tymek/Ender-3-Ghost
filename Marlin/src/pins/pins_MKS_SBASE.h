@@ -158,13 +158,13 @@
 #define ENET_TXD0          P1_00   // J12-11
 #define ENET_TXD1          P1_01   // J12-12
 
-#if !ANY(LPC_SD_LCD, LPC_SD_ONBOARD, LPC_SD_CUSTOM_CABLE)
-  #undef USB_SD_DISABLED
-  #define USB_SD_ONBOARD
-  #define LPC_SD_ONBOARD
+#ifndef SDARD_CONNECTION
+  #define SDCARD_CONNECTION ONBOARD
 #endif
 
-#if ENABLED(LPC_SD_CUSTOM_CABLE)
+#define ONBOARD_SD_CS_PIN  P0_06   // Chip select for "System" SD card
+
+#if SD_CONNECTION_IS(CUSTOM_CABLE)
 
   /**
    * A custom cable is needed. See the README file in the
@@ -182,37 +182,23 @@
   #define SCK_PIN          P1_22   // J8-2 (moved from EXP2 P0.7)
   #define MISO_PIN         P1_23   // J8-3 (moved from EXP2 P0.8)
   #define MOSI_PIN         P2_12   // J8-4 (moved from EXP2 P0.9)
-  #define SS_PIN           P0_28   // Chip select for SD card used by Marlin
-  #define ONBOARD_SD_CS    P0_06   // Chip select for "System" SD card
+  #define SS_PIN           P0_28
   #define LPC_SOFTWARE_SPI  // With a custom cable we need software SPI because the
                             // selected pins are not on a hardware SPI controller
-#elif ENABLED(LPC_SD_LCD)
-
+#elif SD_CONNECTION_IS(LCD)
   // use standard cable and header, SPI and SD detect sre shared with on-board SD card
   // hardware SPI is used for both SD cards. The detect pin is shred between the
   // LCD and onboard SD readers so we disable it.
   #define SCK_PIN          P0_07
   #define MISO_PIN         P0_08
   #define MOSI_PIN         P0_09
-  #define SS_PIN           P0_28   // Chip select for SD card used by Marlin
-  #define ONBOARD_SD_CS    P0_06   // Chip select for "System" SD card
-
-#elif ENABLED(LPC_SD_ONBOARD)
-
-  // The external SD card is not used. Hardware SPI is used to access the card.
-  #if ENABLED(USB_SD_ONBOARD)
-    // When sharing the SD card with a PC we want the menu options to
-    // mount/unmount the card and refresh it. So we disable card detect.
-    #define SHARED_SD_CARD
-  #else
-    #define SD_DETECT_PIN  P0_27
-  #endif
+  #define SS_PIN           P0_28
+#elif SD_CONNECTION_IS(ONBOARD)
+  #define SD_DETECT_PIN    P0_27
   #define SCK_PIN          P0_07
   #define MISO_PIN         P0_08
   #define MOSI_PIN         P0_09
-  #define SS_PIN           P0_06   // Chip select for SD card used by Marlin
-  #define ONBOARD_SD_CS    P0_06   // Chip select for "System" SD card
-
+  #define SS_PIN           ONBOARD_SD_CS_PIN
 #endif
 
 /**
@@ -259,13 +245,21 @@
     #define DOGLCD_SCK     P2_11           // J8-5  (SCK on Fysetc schematic)
     #define DOGLCD_MOSI    P4_28           // J8-6  (MOSI on Fysetc schematic)
 
-    #define RGB_LED
-    //#define RGBW_LED
-    #if EITHER(RGB_LED, RGBW_LED)
-      #define RGB_LED_R_PIN P2_12          // J8-4  (LCD_D6 on Fysetc schematic)
-      #define RGB_LED_G_PIN P1_23          // J8-3  (LCD_D5 on Fysetc schematic)
-      #define RGB_LED_B_PIN P1_22          // J8-2  (LCD_D7 on Fysetc schematic)
-      //#define RGB_LED_W_PIN -1
+    //#define FORCE_SOFT_SPI    // Use this if default of hardware SPI causes display problems
+                                //   results in LCD soft SPI mode 3, SD soft SPI mode 0
+
+    #if EITHER(FYSETC_MINI_12864_1_2, FYSETC_MINI_12864_2_0)
+      #ifndef RGB_LED_R_PIN
+        #define RGB_LED_R_PIN P2_12        // J8-4  (LCD_D6 on Fysetc schematic)
+      #endif
+      #ifndef RGB_LED_G_PIN
+        #define RGB_LED_G_PIN P1_23        // J8-3  (LCD_D5 on Fysetc schematic)
+      #endif
+      #ifndef RGB_LED_B_PIN
+        #define RGB_LED_B_PIN P1_22        // J8-2  (LCD_D7 on Fysetc schematic)
+      #endif
+    #elif ENABLED(FYSETC_MINI_12864_2_1)
+      #define NEOPIXEL_PIN    P2_12
     #endif
 
   #elif ENABLED(MINIPANEL)
@@ -280,7 +274,7 @@
 
 /**
  * Example for trinamic drivers using the J8 connector on MKs Sbase.
- * 2130s need 1 pin for each driver. 2208s need 2 pins for serial control.
+ * 2130s need 1 pin for each driver. 2208/2209s need 2 pins for serial control.
  * This board does not have enough pins to use hardware serial.
  */
 
@@ -308,7 +302,7 @@
  #endif
 #endif
 
-#if MB(MKS_SBASE) && HAS_DRIVER(TMC2208)
+#if MB(MKS_SBASE) && (HAS_DRIVER(TMC2208) || HAS_DRIVER(TMC2209))
   // The shortage of pins becomes apparent.
   // Worst case you may have to give up the LCD
   // RX pins need to be interrupt capable
