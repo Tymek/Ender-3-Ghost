@@ -104,7 +104,7 @@ The following tables shows all changes from Marlin bugfix-2.0.x default values.
 
 |Symbol                       |Value                    |Default
 |-----------------------------|-------------------------|-------
-|WATCH_BED_TEMP_PERIOD        |90                       |60 
+|WATCH_BED_TEMP_PERIOD        |120                      |60 
 |PID_EXTRUSION_SCALING        |(uncommented)            |(commented out)
 |DEFAULT_Kc                   |(1)                      |(100)
 |AUTOTEMP                     |(commented out)          |(uncommented)
