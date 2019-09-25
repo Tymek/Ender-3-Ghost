@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ void safe_delay(millis_t ms) {
 
   #include "../module/probe.h"
   #include "../module/motion.h"
-  #include "../module/stepper.h"
   #include "../module/stepper.h"
   #include "../libs/numtostr.h"
   #include "../feature/bedlevel/bedlevel.h"
@@ -80,40 +79,36 @@ void safe_delay(millis_t ms) {
     );
 
     #if HAS_BED_PROBE
-      SERIAL_ECHOPAIR(
-        "Probe Offset X:" STRINGIFY(X_PROBE_OFFSET_FROM_EXTRUDER)
-                    " Y:" STRINGIFY(Y_PROBE_OFFSET_FROM_EXTRUDER)
-                    " Z:", zprobe_zoffset
-      );
-      if ((X_PROBE_OFFSET_FROM_EXTRUDER) > 0)
+      SERIAL_ECHOPAIR("Probe Offset X:", probe_offset[X_AXIS], " Y:", probe_offset[Y_AXIS], " Z:", probe_offset[Z_AXIS]);
+      if (probe_offset[X_AXIS] > 0)
         SERIAL_ECHOPGM(" (Right");
-      else if ((X_PROBE_OFFSET_FROM_EXTRUDER) < 0)
+      else if (probe_offset[X_AXIS] < 0)
         SERIAL_ECHOPGM(" (Left");
-      else if ((Y_PROBE_OFFSET_FROM_EXTRUDER) != 0)
+      else if (probe_offset[Y_AXIS] != 0)
         SERIAL_ECHOPGM(" (Middle");
       else
         SERIAL_ECHOPGM(" (Aligned With");
 
-      if ((Y_PROBE_OFFSET_FROM_EXTRUDER) > 0) {
+      if (probe_offset[Y_AXIS] > 0) {
         #if IS_SCARA
           SERIAL_ECHOPGM("-Distal");
         #else
           SERIAL_ECHOPGM("-Back");
         #endif
       }
-      else if ((Y_PROBE_OFFSET_FROM_EXTRUDER) < 0) {
+      else if (probe_offset[Y_AXIS] < 0) {
         #if IS_SCARA
           SERIAL_ECHOPGM("-Proximal");
         #else
           SERIAL_ECHOPGM("-Front");
         #endif
       }
-      else if ((X_PROBE_OFFSET_FROM_EXTRUDER) != 0)
+      else if (probe_offset[X_AXIS] != 0)
         SERIAL_ECHOPGM("-Center");
 
-      if (zprobe_zoffset < 0)
+      if (probe_offset[Z_AXIS] < 0)
         SERIAL_ECHOPGM(" & Below");
-      else if (zprobe_zoffset > 0)
+      else if (probe_offset[Z_AXIS] > 0)
         SERIAL_ECHOPGM(" & Above");
       else
         SERIAL_ECHOPGM(" & Same Z as");

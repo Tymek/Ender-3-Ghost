@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,6 @@
 
 #include "../inc/MarlinConfigPre.h"
 
-#pragma pack(push, 1) // No padding between fields
-
 typedef struct {
   float retract_length,                     // M207 S - G10 Retract length
         retract_feedrate_mm_s,              // M207 F - G10 Retract feedrate
@@ -39,8 +37,6 @@ typedef struct {
         swap_retract_recover_extra,         // M208 W - G11 Swap Recover length
         swap_retract_recover_feedrate_mm_s; // M208 R - G11 Swap Recover feedrate
 } fwretract_settings_t;
-
-#pragma pack(pop)
 
 #if ENABLED(FWRETRACT)
 

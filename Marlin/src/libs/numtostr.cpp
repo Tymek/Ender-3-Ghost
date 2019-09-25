@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
  */
 
 #include "numtostr.h"
+
+#include "../inc/MarlinConfigPre.h"
 #include "../core/utility.h"
 
 char conv[8] = { 0 };
@@ -57,12 +59,14 @@ char* i8tostr3(const int8_t x) {
   return &conv[4];
 }
 
-// Convert unsigned 16bit int to string 123 format
-char* ui16tostr3(const uint16_t xx) {
+// Convert unsigned 16bit int to string 12345 format
+char* ui16tostr5(const uint16_t xx) {
+  conv[2] = RJDIGIT(xx, 10000);
+  conv[3] = RJDIGIT(xx, 1000);
   conv[4] = RJDIGIT(xx, 100);
   conv[5] = RJDIGIT(xx, 10);
   conv[6] = DIGIMOD(xx, 1);
-  return &conv[4];
+  return &conv[2];
 }
 
 // Convert unsigned 16bit int to string 1234 format
@@ -72,6 +76,14 @@ char* ui16tostr4(const uint16_t xx) {
   conv[5] = RJDIGIT(xx, 10);
   conv[6] = DIGIMOD(xx, 1);
   return &conv[3];
+}
+
+// Convert unsigned 16bit int to string 123 format
+char* ui16tostr3(const uint16_t xx) {
+  conv[4] = RJDIGIT(xx, 100);
+  conv[5] = RJDIGIT(xx, 10);
+  conv[6] = DIGIMOD(xx, 1);
+  return &conv[4];
 }
 
 // Convert signed 16bit int to rj string with 123 or -12 format
@@ -173,7 +185,7 @@ char* ftostr52(const float &f) {
     return &conv[3];
   }
 
-#endif // LCD_DECIMAL_SMALL_XY
+#endif
 
 // Convert float to fixed-length string with +123.4 / -123.4 format
 char* ftostr41sign(const float &f) {
@@ -215,12 +227,7 @@ char* ftostr54sign(const float &f, char plus/*=' '*/) {
 // Convert unsigned float to rj string with 12345 format
 char* ftostr5rj(const float &f) {
   const long i = ((f < 0 ? -f : f) * 10 + 5) / 10;
-  conv[2] = RJDIGIT(i, 10000);
-  conv[3] = RJDIGIT(i, 1000);
-  conv[4] = RJDIGIT(i, 100);
-  conv[5] = RJDIGIT(i, 10);
-  conv[6] = DIGIMOD(i, 1);
-  return &conv[2];
+  return ui16tostr5(i);
 }
 
 // Convert signed float to string with +1234.5 format

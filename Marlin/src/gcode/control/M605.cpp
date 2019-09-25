@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@
         case DXC_AUTO_PARK_MODE:
           break;
         case DXC_DUPLICATION_MODE:
-          if (parser.seen('X')) duplicate_extruder_x_offset = MAX(parser.value_linear_units(), X2_MIN_POS - x_home_pos(0));
+          if (parser.seen('X')) duplicate_extruder_x_offset = _MAX(parser.value_linear_units(), X2_MIN_POS - x_home_pos(0));
           if (parser.seen('R')) duplicate_extruder_temp_offset = parser.value_celsius_diff();
           if (active_extruder != 0) tool_change(0);
           break;
@@ -137,8 +137,8 @@
         DEBUG_EOL();
 
         HOTEND_LOOP() {
-          DEBUG_ECHOPAIR(" nozzle:", int(e));
-          LOOP_XYZ(j) DEBUG_ECHOPAIR("  hotend_offset[", axis_codes[j], "_AXIS][", int(e), "]=", hotend_offset[j][e]);
+          DEBUG_ECHOPAIR(" T", int(e));
+          LOOP_XYZ(a) DEBUG_ECHOPAIR("  hotend_offset[", axis_codes[a], "_AXIS][", int(e), "]=", hotend_offset[a][e]);
           DEBUG_EOL();
         }
         DEBUG_EOL();

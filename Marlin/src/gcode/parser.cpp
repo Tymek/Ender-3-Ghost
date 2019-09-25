@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,6 +224,9 @@ void GCodeParser::parse(char *p) {
     #if ENABLED(GCODE_MACROS)
       case 810: case 811: case 812: case 813: case 814:
       case 815: case 816: case 817: case 818: case 819:
+    #endif
+    #if ENABLED(EXPECTED_PRINTER_CHECK)
+      case 16:
     #endif
     case 23: case 28: case 30: case 117: case 118: case 928: string_arg = p; return;
     default: break;
