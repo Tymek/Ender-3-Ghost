@@ -334,6 +334,7 @@ static_assert(
   #else
     #define HEATER_PINDA_RAW_HI_TEMP 0
     #define HEATER_PINDA_RAW_LO_TEMP 16383
+  #endif
 #endif
 
 #undef REVERSE_TEMP_SENSOR_RANGE

@@ -1532,7 +1532,7 @@ void Temperature::updateTemperaturesFromRawValues() {
     temp_chamber.celsius = analog_to_celsius_chamber(temp_chamber.raw);
   #endif
   #if HAS_TEMP_PINDA
-    temp_pinda.current = analog_to_celsius_pinda(temp_pinda.raw);
+    temp_pinda.celsius = analog_to_celsius_pinda(temp_pinda.raw);
   #endif
   #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
     redundant_temperature = analog_to_celsius_hotend(redundant_temperature_raw, 1);
@@ -2889,7 +2889,7 @@ void Temperature::isr() {
         case H_CHAMBER: k = 'C'; break;
       #endif
       #if HAS_TEMP_PINDA
-        default: k = 'P'; break;
+        case H_PINDA: k = 'P'; break;
       #endif
       #if HAS_TEMP_HOTEND
         default: k = 'T'; break;
