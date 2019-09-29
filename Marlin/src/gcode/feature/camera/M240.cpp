@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
   #endif
 
   #ifdef PHOTO_RETRACT_MM
-    inline void e_move_m240(const float length, const float fr_mm_s) {
+    inline void e_move_m240(const float length, const feedRate_t &fr_mm_s) {
       if (length && thermalManager.hotEnoughToExtrude(active_extruder)) {
         #if ENABLED(ADVANCED_PAUSE_FEATURE)
           do_pause_e_move(length, fr_mm_s);
@@ -104,7 +104,8 @@ void GcodeSuite::M240() {
     };
 
     #ifdef PHOTO_RETRACT_MM
-      constexpr float rfr = (MMS_TO_MMM(
+      const float rval = parser.seenval('R') ? parser.value_linear_units() : _PHOTO_RETRACT_MM;
+      feedRate_t sval = (
         #if ENABLED(ADVANCED_PAUSE_FEATURE)
           PAUSE_PARK_RETRACT_FEEDRATE
         #elif ENABLED(FWRETRACT)
@@ -112,13 +113,12 @@ void GcodeSuite::M240() {
         #else
           45
         #endif
-      ));
-      const float rval = parser.seenval('R') ? parser.value_linear_units() : _PHOTO_RETRACT_MM,
-                  sval = parser.seenval('S') ? MMM_TO_MMS(parser.value_feedrate()) : rfr;
+      );
+      if (parser.seenval('S')) sval = parser.value_feedrate();
       e_move_m240(-rval, sval);
     #endif
 
-    float fr_mm_s = MMM_TO_MMS(parser.linearval('F'));
+    feedRate_t fr_mm_s = MMM_TO_MMS(parser.linearval('F'));
     if (fr_mm_s) NOLESS(fr_mm_s, 10.0f);
 
     constexpr float photo_position[XYZ] = PHOTO_POSITION;

@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@
  *   D    Disable     Disable the Unified Bed Leveling System. In the normal case the user is invoking this
  *                    command to see how well a Mesh as been adjusted to match a print surface. In order to do
  *                    this the Unified Bed Leveling System is turned on by the G26 command. The D parameter
- *                    alters the command's normal behaviour and disables the Unified Bed Leveling System even if
+ *                    alters the command's normal behavior and disables the Unified Bed Leveling System even if
  *                    it is on.
  *
  *   H #  Hotend      Set the Nozzle Temperature. If not specified, a default of 205 C. will be assumed.
@@ -131,7 +131,7 @@
  *   U #  Random      Randomize the order that the circles are drawn on the bed. The search for the closest
  *                    un-drawn circle is still done. But the distance to the location for each circle has a
  *                    random number of the specified size added to it. Specifying S50 will give an interesting
- *                    deviation from the normal behaviour on a 10 x 10 Mesh.
+ *                    deviation from the normal behavior on a 10 x 10 Mesh.
  *
  *   X #  X Coord.    Specify the starting location of the drawing activity.
  *
@@ -168,7 +168,7 @@ int8_t g26_prime_flag;
    */
   bool user_canceled() {
     if (!ui.button_pressed()) return false; // Return if the button isn't pressed
-    ui.set_status_P(PSTR("Mesh Validation Stopped."), 99);
+    ui.set_status_P(PSTR(MSG_G26_CANCELED), 99);
     #if HAS_LCD_MENU
       ui.quick_feedback();
     #endif
@@ -216,41 +216,32 @@ mesh_index_pair find_closest_circle_to_print(const float &X, const float &Y) {
   return return_val;
 }
 
-void G26_line_to_destination(const float &feed_rate) {
-  const float save_feedrate = feedrate_mm_s;
-  feedrate_mm_s = feed_rate;
-  prepare_move_to_destination();  // will ultimately call ubl.line_to_destination_cartesian or ubl.prepare_linear_move_to for UBL_SEGMENTED
-  feedrate_mm_s = save_feedrate;
-}
-
 void move_to(const float &rx, const float &ry, const float &z, const float &e_delta) {
-  float feed_value;
   static float last_z = -999.99;
 
   bool has_xy_component = (rx != current_position[X_AXIS] || ry != current_position[Y_AXIS]); // Check if X or Y is involved in the movement.
 
   if (z != last_z) {
     last_z = z;
-    feed_value = planner.settings.max_feedrate_mm_s[Z_AXIS]/(2.0);  // Base the feed rate off of the configured Z_AXIS feed rate
+    const feedRate_t feed_value = planner.settings.max_feedrate_mm_s[Z_AXIS] * 0.5f; // Use half of the Z_AXIS max feed rate
 
     destination[X_AXIS] = current_position[X_AXIS];
     destination[Y_AXIS] = current_position[Y_AXIS];
     destination[Z_AXIS] = z;                          // We know the last_z!=z or we wouldn't be in this block of code.
     destination[E_AXIS] = current_position[E_AXIS];
 
-    G26_line_to_destination(feed_value);
+    prepare_internal_move_to_destination(feed_value);
     set_destination_from_current();
   }
 
-  // Check if X or Y is involved in the movement.
-  // Yes: a 'normal' movement. No: a retract() or recover()
-  feed_value = has_xy_component ? G26_XY_FEEDRATE : planner.settings.max_feedrate_mm_s[E_AXIS] / 1.5;
+  // If X or Y is involved do a 'normal' move. Otherwise retract/recover/hop.
+  const feedRate_t feed_value = has_xy_component ? feedRate_t(G26_XY_FEEDRATE) : planner.settings.max_feedrate_mm_s[E_AXIS] * 0.666f;
 
   destination[X_AXIS] = rx;
   destination[Y_AXIS] = ry;
   destination[E_AXIS] += e_delta;
 
-  G26_line_to_destination(feed_value);
+  prepare_internal_move_to_destination(feed_value);
   set_destination_from_current();
 }
 
@@ -337,9 +328,9 @@ inline bool look_for_lines_to_connect() {
             sx = _GET_MESH_X(  i  ) + (INTERSECTION_CIRCLE_RADIUS - (CROSSHAIRS_SIZE)); // right edge
             ex = _GET_MESH_X(i + 1) - (INTERSECTION_CIRCLE_RADIUS - (CROSSHAIRS_SIZE)); // left edge
 
-            sx = constrain(sx, X_MIN_POS + 1, X_MAX_POS - 1);
+            LIMIT(sx, X_MIN_POS + 1, X_MAX_POS - 1);
             sy = ey = constrain(_GET_MESH_Y(j), Y_MIN_POS + 1, Y_MAX_POS - 1);
-            ex = constrain(ex, X_MIN_POS + 1, X_MAX_POS - 1);
+            LIMIT(ex, X_MIN_POS + 1, X_MAX_POS - 1);
 
             if (position_is_reachable(sx, sy) && position_is_reachable(ex, ey))
               print_line_from_here_to_there(sx, sy, g26_layer_height, ex, ey, g26_layer_height);
@@ -358,8 +349,8 @@ inline bool look_for_lines_to_connect() {
               ey = _GET_MESH_Y(j + 1) - (INTERSECTION_CIRCLE_RADIUS - (CROSSHAIRS_SIZE)); // bottom edge
 
               sx = ex = constrain(_GET_MESH_X(i), X_MIN_POS + 1, X_MAX_POS - 1);
-              sy = constrain(sy, Y_MIN_POS + 1, Y_MAX_POS - 1);
-              ey = constrain(ey, Y_MIN_POS + 1, Y_MAX_POS - 1);
+              LIMIT(sy, Y_MIN_POS + 1, Y_MAX_POS - 1);
+              LIMIT(ey, Y_MIN_POS + 1, Y_MAX_POS - 1);
 
               if (position_is_reachable(sx, sy) && position_is_reachable(ex, ey))
                 print_line_from_here_to_there(sx, sy, g26_layer_height, ex, ey, g26_layer_height);
@@ -385,8 +376,8 @@ inline bool turn_on_heaters() {
   #if HAS_HEATED_BED
 
     if (g26_bed_temp > 25) {
-      #if ENABLED(ULTRA_LCD)
-        ui.set_status_P(PSTR("G26 Heating Bed."), 99);
+      #if HAS_SPI_LCD
+        ui.set_status_P(PSTR(MSG_G26_HEATING_BED), 99);
         ui.quick_feedback();
         #if HAS_LCD_MENU
           ui.capture();
@@ -406,8 +397,8 @@ inline bool turn_on_heaters() {
   #endif // HAS_HEATED_BED
 
   // Start heating the active nozzle
-  #if ENABLED(ULTRA_LCD)
-    ui.set_status_P(PSTR("G26 Heating Nozzle."), 99);
+  #if HAS_SPI_LCD
+    ui.set_status_P(PSTR(MSG_G26_HEATING_NOZZLE), 99);
     ui.quick_feedback();
   #endif
   thermalManager.setTargetHotend(g26_hotend_temp, active_extruder);
@@ -420,7 +411,7 @@ inline bool turn_on_heaters() {
     )
   ) return G26_ERR;
 
-  #if ENABLED(ULTRA_LCD)
+  #if HAS_SPI_LCD
     ui.reset_status();
     ui.quick_feedback();
   #endif
@@ -433,6 +424,7 @@ inline bool turn_on_heaters() {
  */
 inline bool prime_nozzle() {
 
+  const feedRate_t fr_slow_e = planner.settings.max_feedrate_mm_s[E_AXIS] / 15.0f;
   #if HAS_LCD_MENU
     #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
       float Total_Prime = 0.0;
@@ -441,7 +433,7 @@ inline bool prime_nozzle() {
     if (g26_prime_flag == -1) {  // The user wants to control how much filament gets purged
 
       ui.capture();
-      ui.set_status_P(PSTR("User-Controlled Prime"), 99);
+      ui.set_status_P(PSTR(MSG_G26_MANUAL_PRIME), 99);
       ui.chirp();
 
       set_destination_from_current();
@@ -455,7 +447,7 @@ inline bool prime_nozzle() {
           Total_Prime += 0.25;
           if (Total_Prime >= EXTRUDE_MAXLENGTH) return G26_ERR;
         #endif
-        G26_line_to_destination(planner.settings.max_feedrate_mm_s[E_AXIS] / 15.0);
+        prepare_internal_move_to_destination(fr_slow_e);
         set_destination_from_current();
         planner.synchronize();    // Without this synchronize, the purge is more consistent,
                                   // but because the planner has a buffer, we won't be able
@@ -465,31 +457,25 @@ inline bool prime_nozzle() {
 
       ui.wait_for_release();
 
-      ui.set_status_P(PSTR("Done Priming"), 99);
+      ui.set_status_P(PSTR(MSG_G26_PRIME_DONE), 99);
       ui.quick_feedback();
       ui.release();
     }
     else
   #endif
   {
-    #if ENABLED(ULTRA_LCD)
-      ui.set_status_P(PSTR("Fixed Length Prime."), 99);
+    #if HAS_SPI_LCD
+      ui.set_status_P(PSTR(MSG_G26_FIXED_LENGTH), 99);
       ui.quick_feedback();
     #endif
     set_destination_from_current();
     destination[E_AXIS] += g26_prime_length;
-    G26_line_to_destination(planner.settings.max_feedrate_mm_s[E_AXIS] / 15.0);
+    prepare_internal_move_to_destination(fr_slow_e);
     set_destination_from_current();
     retract_filament(destination);
   }
 
   return G26_OK;
-}
-
-float valid_trig_angle(float d) {
-  while (d > 360.0) d -= 360.0;
-  while (d < 0.0) d += 360.0;
-  return d;
 }
 
 /**
@@ -787,12 +773,13 @@ void GcodeSuite::G26() {
         move_to(sx, sy, g26_layer_height, 0.0); // Get to the starting point with no extrusion / un-Z bump
 
         recover_filament(destination);
-        const float save_feedrate = feedrate_mm_s;
-        feedrate_mm_s = PLANNER_XY_FEEDRATE() / 10.0;
 
+        const feedRate_t old_feedrate = feedrate_mm_s;
+        feedrate_mm_s = PLANNER_XY_FEEDRATE() * 0.1f;
         plan_arc(endpoint, arc_offset, false);  // Draw a counter-clockwise arc
-        feedrate_mm_s = save_feedrate;
+        feedrate_mm_s = old_feedrate;
         set_destination_from_current();
+
         #if HAS_LCD_MENU
           if (user_canceled()) goto LEAVE; // Check if the user wants to stop the Mesh Validation
         #endif
@@ -832,10 +819,10 @@ void GcodeSuite::G26() {
             // Check to make sure this segment is entirely on the bed, skip if not.
             if (!position_is_reachable(rx, ry) || !position_is_reachable(xe, ye)) continue;
           #else                                               // not, we need to skip
-            rx = constrain(rx, X_MIN_POS + 1, X_MAX_POS - 1); // This keeps us from bumping the endstops
-            ry = constrain(ry, Y_MIN_POS + 1, Y_MAX_POS - 1);
-            xe = constrain(xe, X_MIN_POS + 1, X_MAX_POS - 1);
-            ye = constrain(ye, Y_MIN_POS + 1, Y_MAX_POS - 1);
+            LIMIT(rx, X_MIN_POS + 1, X_MAX_POS - 1); // This keeps us from bumping the endstops
+            LIMIT(ry, Y_MIN_POS + 1, Y_MAX_POS - 1);
+            LIMIT(xe, X_MIN_POS + 1, X_MAX_POS - 1);
+            LIMIT(ye, Y_MIN_POS + 1, Y_MAX_POS - 1);
           #endif
 
           print_line_from_here_to_there(rx, ry, g26_layer_height, xe, ye, g26_layer_height);
@@ -852,7 +839,7 @@ void GcodeSuite::G26() {
   } while (--g26_repeats && location.x_index >= 0 && location.y_index >= 0);
 
   LEAVE:
-  ui.set_status_P(PSTR("Leaving G26"), -1);
+  ui.set_status_P(PSTR(MSG_G26_LEAVING), -1);
 
   retract_filament(destination);
   destination[Z_AXIS] = Z_CLEARANCE_BETWEEN_PROBES;

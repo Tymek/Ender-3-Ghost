@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,21 +45,25 @@ void GcodeSuite::G42() {
     }
 
     set_destination_from_current();
+
     if (hasI) destination[X_AXIS] = _GET_MESH_X(ix);
     if (hasJ) destination[Y_AXIS] = _GET_MESH_Y(iy);
-    if (parser.boolval('P')) {
-      if (hasI) destination[X_AXIS] -= X_PROBE_OFFSET_FROM_EXTRUDER;
-      if (hasJ) destination[Y_AXIS] -= Y_PROBE_OFFSET_FROM_EXTRUDER;
-    }
 
-    const float fval = parser.linearval('F');
-    if (fval > 0.0) feedrate_mm_s = MMM_TO_MMS(fval);
+    #if HAS_BED_PROBE
+      if (parser.boolval('P')) {
+        if (hasI) destination[X_AXIS] -= probe_offset[X_AXIS];
+        if (hasJ) destination[Y_AXIS] -= probe_offset[Y_AXIS];
+      }
+    #endif
+
+    const feedRate_t fval = parser.linearval('F'),
+                     fr_mm_s = fval > 0 ? MMM_TO_MMS(fval) : 0.0f;
 
     // SCARA kinematic has "safe" XY raw moves
     #if IS_SCARA
-      prepare_uninterpolated_move_to_destination();
+      prepare_internal_fast_move_to_destination(fr_mm_s);
     #else
-      prepare_move_to_destination();
+      prepare_internal_move_to_destination(fr_mm_s);
     #endif
   }
 }

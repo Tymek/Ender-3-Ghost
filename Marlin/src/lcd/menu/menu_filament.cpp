@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ static void _change_filament_temp(const uint16_t temperature) {
   char cmd[11];
   sprintf_P(cmd, _change_filament_temp_command(), _change_filament_temp_extruder);
   thermalManager.setTargetHotend(temperature, _change_filament_temp_extruder);
-  lcd_enqueue_command(cmd);
+  lcd_enqueue_one_now(cmd);
 }
 inline void _lcd_change_filament_temp_1_func()    { _change_filament_temp(ui.preheat_hotend_temp[0]); }
 inline void _lcd_change_filament_temp_2_func()    { _change_filament_temp(ui.preheat_hotend_temp[1]); }
@@ -79,7 +79,7 @@ void _menu_temp_filament_op(const PauseMode mode, const int8_t extruder) {
   _change_filament_temp_mode = mode;
   _change_filament_temp_extruder = extruder;
   START_MENU();
-  if (LCD_HEIGHT >= 4) STATIC_ITEM_P(change_filament_header(mode), true, true);
+  if (LCD_HEIGHT >= 4) STATIC_ITEM_P(change_filament_header(mode), SS_CENTER|SS_INVERT);
   MENU_BACK(MSG_BACK);
   MENU_ITEM(function, MSG_PREHEAT_1, _lcd_change_filament_temp_1_func);
   MENU_ITEM(function, MSG_PREHEAT_2, _lcd_change_filament_temp_2_func);
@@ -328,7 +328,7 @@ static PGM_P pause_header() {
 #define HOTEND_STATUS_ITEM() do { \
   if (_menuLineNr == _thisItemNr) { \
     if (ui.should_draw()) { \
-      draw_menu_item_static(_lcdLineNr, PSTR(MSG_FILAMENT_CHANGE_NOZZLE), false, true); \
+      draw_menu_item_static(_lcdLineNr, PSTR(MSG_FILAMENT_CHANGE_NOZZLE), SS_INVERT); \
       ui.draw_hotend_status(_lcdLineNr, hotend_status_extruder); \
     } \
     if (_skipStatic && encoderLine <= _thisItemNr) { \
@@ -351,7 +351,7 @@ void lcd_pause_extrude_more() {
 void menu_pause_option() {
   START_MENU();
   #if LCD_HEIGHT > 2
-    STATIC_ITEM(MSG_FILAMENT_CHANGE_OPTION_HEADER, true, false);
+    STATIC_ITEM(MSG_FILAMENT_CHANGE_OPTION_HEADER);
   #endif
   MENU_ITEM(function, MSG_FILAMENT_CHANGE_OPTION_PURGE, lcd_pause_extrude_more);
   #if HAS_FILAMENT_SENSOR
@@ -367,13 +367,13 @@ void menu_pause_option() {
 // ADVANCED_PAUSE_FEATURE message screens
 //
 
-void _lcd_pause_message(PGM_P const msg1, PGM_P const msg2=NULL, PGM_P const msg3=NULL) {
+void _lcd_pause_message(PGM_P const msg1, PGM_P const msg2=nullptr, PGM_P const msg3=nullptr) {
   START_SCREEN();
-  STATIC_ITEM_P(pause_header(), true, true);
+  STATIC_ITEM_P(pause_header(), SS_CENTER|SS_INVERT);
   STATIC_ITEM_P(msg1);
   if (msg2) STATIC_ITEM_P(msg2);
-  if (msg3) STATIC_ITEM_P(msg3);
-  if ((!!msg2) + (!!msg3) + 2 < LCD_HEIGHT - 1) STATIC_ITEM(" ");
+  if (msg3 && (LCD_HEIGHT) >= 5) STATIC_ITEM_P(msg3);
+  if ((!!msg2) + (!!msg3) + 2 < (LCD_HEIGHT) - 1) STATIC_ITEM(" ");
   HOTEND_STATUS_ITEM();
   END_SCREEN();
 }
@@ -512,11 +512,11 @@ FORCE_INLINE screenFunc_t ap_message_screen(const PauseMessage message) {
     case PAUSE_MESSAGE_HEAT:     return lcd_pause_heat_message;
     case PAUSE_MESSAGE_HEATING:  return lcd_pause_heating_message;
     case PAUSE_MESSAGE_OPTION:   pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
-                                          return menu_pause_option;
+                                 return menu_pause_option;
     case PAUSE_MESSAGE_STATUS:
     default: break;
   }
-  return NULL;
+  return nullptr;
 }
 
 void lcd_pause_show_message(

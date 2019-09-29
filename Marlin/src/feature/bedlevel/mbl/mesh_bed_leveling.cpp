@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,10 @@
 
   #include "../../../module/motion.h"
   #include "../../../feature/bedlevel/bedlevel.h"
+
+  #if ENABLED(EXTENSIBLE_UI)
+    #include "../../../lcd/extensible_ui/ui_api.h"
+  #endif
 
   mesh_bed_leveling mbl;
 
@@ -60,7 +64,7 @@
      * Prepare a mesh-leveled linear move in a Cartesian setup,
      * splitting the move where it crosses mesh borders.
      */
-    void mesh_bed_leveling::line_to_destination(const float fr_mm_s, uint8_t x_splits, uint8_t y_splits) {
+    void mesh_bed_leveling::line_to_destination(const feedRate_t &scaled_fr_mm_s, uint8_t x_splits, uint8_t y_splits) {
       // Get current and destination cells for this line
       int cx1 = cell_index_x(current_position[X_AXIS]),
           cy1 = cell_index_y(current_position[Y_AXIS]),
@@ -73,7 +77,7 @@
 
       // Start and end in the same cell? No split needed.
       if (cx1 == cx2 && cy1 == cy2) {
-        line_to_destination(fr_mm_s);
+        line_to_destination(scaled_fr_mm_s);
         set_current_from_destination();
         return;
       }
@@ -81,7 +85,7 @@
       #define MBL_SEGMENT_END(A) (current_position[_AXIS(A)] + (destination[_AXIS(A)] - current_position[_AXIS(A)]) * normalized_dist)
 
       float normalized_dist, end[XYZE];
-      const int8_t gcx = MAX(cx1, cx2), gcy = MAX(cy1, cy2);
+      const int8_t gcx = _MAX(cx1, cx2), gcy = _MAX(cy1, cy2);
 
       // Crosses on the X and not already split on this X?
       // The x_splits flags are insurance against rounding errors.
@@ -105,7 +109,7 @@
       else {
         // Must already have been split on these border(s)
         // This should be a rare case.
-        line_to_destination(fr_mm_s);
+        line_to_destination(scaled_fr_mm_s);
         set_current_from_destination();
         return;
       }
@@ -114,11 +118,11 @@
       destination[E_AXIS] = MBL_SEGMENT_END(E);
 
       // Do the split and look for more borders
-      line_to_destination(fr_mm_s, x_splits, y_splits);
+      line_to_destination(scaled_fr_mm_s, x_splits, y_splits);
 
       // Restore destination from stack
       COPY(destination, end);
-      line_to_destination(fr_mm_s, x_splits, y_splits);
+      line_to_destination(scaled_fr_mm_s, x_splits, y_splits);
     }
 
   #endif // IS_CARTESIAN && !SEGMENT_LEVELED_MOVES

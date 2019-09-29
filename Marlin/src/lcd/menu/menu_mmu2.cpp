@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,7 +164,7 @@ inline void action_mmu2_choose4() { action_mmu2_choose(4); }
 void menu_mmu2_choose_filament() {
   START_MENU();
   #if LCD_HEIGHT > 2
-    STATIC_ITEM(MSG_MMU2_CHOOSE_FILAMENT_HEADER, true, true);
+    STATIC_ITEM(MSG_MMU2_CHOOSE_FILAMENT_HEADER, SS_CENTER|SS_INVERT);
   #endif
   MENU_ITEM(function, MSG_MMU2_FILAMENT0, action_mmu2_choose0);
   MENU_ITEM(function, MSG_MMU2_FILAMENT1, action_mmu2_choose1);
@@ -187,7 +187,7 @@ void menu_mmu2_pause() {
   currentTool = mmu2.get_current_tool();
   START_MENU();
   #if LCD_HEIGHT > 2
-    STATIC_ITEM(MSG_MMU2_FILAMENT_CHANGE_HEADER, true, true);
+    STATIC_ITEM(MSG_MMU2_FILAMENT_CHANGE_HEADER, SS_CENTER|SS_INVERT);
   #endif
   MENU_ITEM(function, MSG_MMU2_RESUME, action_mmu2_M600_resume);
   MENU_ITEM(function, MSG_MMU2_UNLOAD_FILAMENT, action_mmu2_M600_unload_filament);

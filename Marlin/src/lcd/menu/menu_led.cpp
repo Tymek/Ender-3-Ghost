@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
   void menu_led_presets() {
     START_MENU();
     #if LCD_HEIGHT > 2
-      STATIC_ITEM(MSG_LED_PRESETS, true, true);
+      STATIC_ITEM(MSG_LED_PRESETS, SS_CENTER|SS_INVERT);
     #endif
     MENU_BACK(MSG_LED_CONTROL);
     MENU_ITEM(function, MSG_SET_LEDS_WHITE, leds.set_white);
