@@ -41,8 +41,7 @@ The following tables shows all changes from Marlin bugfix-2.0.x default values.
 |DEFAULT_EJERK                |2.5                      |5.0
 |S_CURVE_ACCELERATION         |(uncommented)            |(commented out)
 |FIX_MOUNTED_PROBE            |(uncommented)            |(commented out)
-|X_PROBE_OFFSET_FROM_EXTRUDER |23                       |10
-|Y_PROBE_OFFSET_FROM_EXTRUDER |5                        |10
+|NOZZLE_TO_PROBE_OFFSET       |{ 23, 5, 0 }             |{ 10, 10, 0 }
 |MIN_PROBE_EDGE               |0                        |10
 |XY_PROBE_SPEED               |10000                    |8000
 |Z_PROBE_SPEED_SLOW           |(Z_PROBE_SPEED_FAST / 4) |(Z_PROBE_SPEED_FAST / 2)
@@ -131,11 +130,16 @@ The following tables shows all changes from Marlin bugfix-2.0.x default values.
 |BABYSTEP_ZPROBE_OFFSET       |(uncommented)            |(commented out)
 |LIN_ADVANCE                  |(uncommented)            |(commented out)
 |LIN_ADVANCE_K                |0                        |0.22
+|MIN_PROBE_EDGE_LEFT          |24                       |MIN_PROBE_EDGE (commented out)
+|MIN_PROBE_EDGE_RIGHT         |22                       |MIN_PROBE_EDGE (commented out)
+|MIN_PROBE_EDGE_FRONT         |6                        |MIN_PROBE_EDGE (commented out)
+|MIN_PROBE_EDGE_BACK          |0                        |MIN_PROBE_EDGE (commented out)
 |MESH_MIN_X                   |24                       |MESH_INSET (commented out)
 |MESH_MIN_Y                   |6                        |MESH_INSET (commented out)
 |MESH_MAX_X                   |228                      |X_BED_SIZE - (MESH_INSET) (commented out)
 |MESH_MAX_Y                   |210                      |Y_BED_SIZE - (MESH_INSET) (commented out)
-|MINIMUM_STEPPER_DIR_DELAY    |20                       |650 (commented out)
+|MINIMUM_STEPPER_POST_DIR_DELAY |20                     |650 (commented out)
+]MINIMUM_STEPPER_PRE_DIR_DELAY  |20                     |650 (commented out)
 |MINIMUM_STEPPER_PULSE        |0                        |2 (commented out)
 |MAXIMUM_STEPPER_RATE         |400000                   |250000 (commented out)
 |ADVANCED_PAUSE_FEATURE       |(uncommented)            |(commented out)
@@ -164,7 +168,7 @@ The following tables shows all changes from Marlin bugfix-2.0.x default values.
 |STEALTHCHOP_XY               |(commented out)          |(uncommented)
 |STEALTHCHOP_Z                |(commented out)          |(uncommented)
 |STEALTHCHOP_E                |(commented out)          |(uncommented)
-|CHOPPER_TIMING               |{3, -2, 6} (see below)   |CHOPPER_DEFAULT_12V
+|CHOPPER_TIMING               |CHOPPER_PRUSAMK3_24V   |CHOPPER_DEFAULT_12V
 |MONITOR_DRIVER_STATUS        |(uncommented)            |(commented out)
 |SENSORLESS_HOMING            |(uncommented)            |(commented out) 
 |X_STALL_SENSITIVITY          |3                        |8
@@ -266,11 +270,6 @@ There is now a new concept of the CHOPPER_TIMING parameter that can be defined l
 ```
 { <off_time[1..15]>, <hysteresis_end[-3..12]>, hysteresis_start[1..8] }
 ```
-There is even a defined CHOPPER_PRUSAMK3_24V those are set to 
-```
-{ 4,  1, 4 }
-```
-Sadly according to teemalut those are the wrong values. He will create eventually a pull-request with the new values. Meanwhile we can use them directly as a workaound {3, -2, 6}.
 
 He also explained how the numbers are made: "Hysteresis end has an offset of -3.
 Meaning that if you want to use setting -3, you need to write 0 to the driver. -2 needs 1. And so forth.

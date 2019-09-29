@@ -48,7 +48,7 @@
 // Identifiers for other heaters
 typedef enum : int8_t {
   INDEX_NONE = -4,
-  H_REDUNDANT, H_CHAMBER, H_BED,
+  H_REDUNDANT, H_CHAMBER, H_PINDA, H_BED,
   H_E0, H_E1, H_E2, H_E3, H_E4, H_E5
 } heater_ind_t;
 
@@ -125,8 +125,7 @@ enum ADCSensorState : char {
     PrepareJoy_Z, MeasureJoy_Z,
   #endif
   #if HAS_TEMP_PINDA
-    PrepareTemp_PINDA,
-    MeasureTemp_PINDA,
+    PrepareTemp_PINDA, MeasureTemp_PINDA,
   #endif
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     Prepare_FILWIDTH, Measure_FILWIDTH,

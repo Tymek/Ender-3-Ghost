@@ -327,5 +327,13 @@ static_assert(
     #define HEATER_CHAMBER_RAW_LO_TEMP 16383
   #endif
 #endif
+#ifndef HEATER_PINDA_RAW_HI_TEMP
+  #if defined(REVERSE_TEMP_SENSOR_RANGE) || !defined(HEATER_PINDA_USES_THERMISTOR)
+    #define HEATER_PINDA_RAW_HI_TEMP 16383
+    #define HEATER_PINDA_RAW_LO_TEMP 0
+  #else
+    #define HEATER_PINDA_RAW_HI_TEMP 0
+    #define HEATER_PINDA_RAW_LO_TEMP 16383
+#endif
 
 #undef REVERSE_TEMP_SENSOR_RANGE
