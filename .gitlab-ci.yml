@@ -1,0 +1,19 @@
+image: python:2.7
+
+build:
+  before_script:
+    - pip install -U platformio
+    - platformio update
+  script:
+    - platformio run
+  artifacts:
+    untracked: false
+    paths:
+      - .pio/build/LPC1768/firmware.bin
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - .piolibdeps
+  only:
+    - master
+    - tags
