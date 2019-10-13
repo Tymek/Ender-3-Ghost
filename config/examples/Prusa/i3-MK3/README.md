@@ -10,7 +10,7 @@ The following tables shows all changes from Marlin bugfix-2.0.x default values.
 |-----------------------------|-------------------------|-------
 |BAUDRATE                     |115200                   |250000
 |MOTHERBOARD                  |BOARD_EINSY_RAMBO        |BOARD_RAMPS_14_EFB
-|CUSTOM_MACHINE_NAME          |"Prusa i3 MK3"           |"3D Printer" (commented out)
+|CUSTOM_MACHINE_NAME          |"Prusa i3 MK3S"           |"3D Printer" (commented out)
 |DEFAULT_NOMINAL_FILAMENT_DIA |1.75                     |3.0
 |TEMP_SENSOR_0                |5                        |1
 |TEMP_SENSOR_BED              |1                        |0
@@ -36,9 +36,11 @@ The following tables shows all changes from Marlin bugfix-2.0.x default values.
 |DEFAULT_ACCELERATION         |1250                     |3000
 |DEFAULT_RETRACT_ACCELERATION |1250                     |3000
 |DEFAULT_TRAVEL_ACCELERATION  |1250                     |3000
-|JUNCTION_DEVIATION           |(uncommented)            |(commented out)
+|DEFAULT_XJERK                |8.0                      |10.0
+|DEFAULT_YJERK                |8.0                      |10.0
 |DEFAULT_ZJERK                |0.4                      |0.3
-|DEFAULT_EJERK                |2.5                      |5.0
+|DEFAULT_EJERK                |1.5                      |5.0
+|JUNCTION_DEVIATION_MM        |0.020                    |0.013
 |S_CURVE_ACCELERATION         |(uncommented)            |(commented out)
 |FIX_MOUNTED_PROBE            |(uncommented)            |(commented out)
 |NOZZLE_TO_PROBE_OFFSET       |{ 23, 5, 0 }             |{ 10, 10, 0 }
