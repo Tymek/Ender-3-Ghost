@@ -48,8 +48,8 @@
 // Identifiers for other heaters
 typedef enum : int8_t {
   INDEX_NONE = -4,
-  H_REDUNDANT, H_CHAMBER, H_PINDA, H_BED,
-  H_E0, H_E1, H_E2, H_E3, H_E4, H_E5
+  H_REDUNDANT, H_CHAMBER, H_BED,
+  H_E0, H_E1, H_E2, H_E3, H_E4, H_E5, H_PINDA
 } heater_ind_t;
 
 // PID storage

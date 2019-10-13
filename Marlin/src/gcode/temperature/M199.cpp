@@ -87,7 +87,7 @@ void GcodeSuite::M199() {
         SERIAL_EOL();
         
         #if ENABLED(ULTRA_LCD)
-          ui.status_printf_P(0, PSTR("P:%i/%i "), is_pinda_cooling ? GET_TEXT(MSG_COOLING) : GET_TEXT(MSG_HEATING), int16_t(pinda_temp), target_temp);
+          ui.status_printf_P(0, PSTR("P:%i/%i " S_FMT), int16_t(pinda_temp), target_temp, is_pinda_cooling ? GET_TEXT(MSG_COOLING) : GET_TEXT(MSG_HEATING));
         #endif
       }
 
