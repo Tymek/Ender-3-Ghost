@@ -448,7 +448,7 @@
 #define HEATER_3_MAXTEMP 265
 #define HEATER_4_MAXTEMP 265
 #define HEATER_5_MAXTEMP 265
-#define BED_MAXTEMP      125
+#define BED_MAXTEMP      130
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -562,7 +562,7 @@
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 400
+#define EXTRUDE_MAXLENGTH 500
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
