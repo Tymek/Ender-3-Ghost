@@ -696,7 +696,6 @@
  *
  * :[2,3,4,5,6,7]
  */
-// TODO
 //#define ENDSTOP_NOISE_THRESHOLD 2
 
 //=============================================================================
@@ -724,14 +723,14 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 93 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 415 }
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 400, 400, 30, 120 }
+#define DEFAULT_MAX_FEEDRATE          { 400, 400, 25, 25 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -739,7 +738,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 5000 }
+#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -749,8 +748,8 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION         1000    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION 1000    // E acceleration for retracts
+#define DEFAULT_ACCELERATION         1500    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION 3000    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION  2500    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
@@ -762,7 +761,6 @@
  *   https://reprap.org/forum/read.php?1,739819
  *   http://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
-// TODO
 //#define JUNCTION_DEVIATION
 #if ENABLED(JUNCTION_DEVIATION)
   #define JUNCTION_DEVIATION_MM 0.02  // (mm) Distance from real junction edge
@@ -921,10 +919,10 @@
 #define NOZZLE_TO_PROBE_OFFSET { -29, 6, -1 }
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 25
+#define MIN_PROBE_EDGE 30
 
 // X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 19200
+#define XY_PROBE_SPEED 18000
 
 // Feedrate (mm/m) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_SPEED_FAST 1200 // mm/min
@@ -1024,7 +1022,7 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR true
+#define INVERT_E0_DIR false
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
@@ -1050,7 +1048,7 @@
 
 // The size of the print bed
 #define X_BED_SIZE 235
-#define Y_BED_SIZE 227
+#define Y_BED_SIZE 235
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS -3
