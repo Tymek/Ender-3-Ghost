@@ -52,31 +52,6 @@
 #define E0_DIR_PIN                         P2_13
 #define E0_ENABLE_PIN                      P2_12
 
-
-#define E1_STEP_PIN        P0_01
-#define E1_DIR_PIN         P0_00
-#define E1_ENABLE_PIN      P0_10
-
-//
-// Temperature Sensors
-//  3.3V max when defined as an analog input
-//
-#define TEMP_BED_PIN       1   // Analog Input
-#define TEMP_0_PIN         2   // Analog Input
-#define TEMP_1_PIN         0   // Analog Input
-
-//
-// Heaters / Fans
-//
-#define HEATER_0_PIN       P2_07
-#if HOTENDS == 1
-  // #define FAN1_PIN         P2_04
-#else
-  #define HEATER_1_PIN     P2_04
-#endif
-#define FAN_PIN            P2_03
-#define HEATER_BED_PIN     P2_05
-
 /**
  * LCD / Controller
  *
@@ -158,9 +133,9 @@
   #define TMC_SW_MOSI                      P0_18
   #define TMC_SW_MISO                      P0_17
   // To minimize pin usage use the same clock pin as the display/SD card reader. (May generate LCD noise.)
-  // #define TMC_SW_SCK        P0_15
+  // #define TMC_SW_SCK                       P0_15
   // If pin 2_06 is unused, it can be used for the clock to avoid the LCD noise.
-  #define TMC_SW_SCK        P2_06
+  #define TMC_SW_SCK                     P2_06
 
   #if ENABLED(SOFTWARE_DRIVER_ENABLE)
 
@@ -231,7 +206,7 @@
       #undef SD_DETECT_PIN
       #define E0_CS_PIN                    P1_23 // P1_31
       // We use LCD_SDSS pin for E1
-      #undef  LCD_SDSS
+      #undef LCD_SDSS
       #define LCD_SDSS                     -1
       // #define E1_CS_PIN                    P1_23
     #endif
