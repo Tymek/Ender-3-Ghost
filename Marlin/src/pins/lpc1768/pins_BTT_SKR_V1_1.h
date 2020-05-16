@@ -140,9 +140,9 @@
   #define TMC_SW_MOSI                      P0_18
   #define TMC_SW_MISO                      P0_17
   // To minimize pin usage use the same clock pin as the display/SD card reader. (May generate LCD noise.)
-  #define TMC_SW_SCK                       P0_15
+  // #define TMC_SW_SCK                       P0_15
   // If pin 2_06 is unused, it can be used for the clock to avoid the LCD noise.
-  //#define TMC_SW_SCK                     P2_06
+  #define TMC_SW_SCK                     P2_06
 
   #if ENABLED(SOFTWARE_DRIVER_ENABLE)
 
@@ -201,21 +201,21 @@
     // Example 2: A REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
     //            The SD card reader attached to the LCD (if present) can't be used because
     //            the pins will be in use. So SDCARD_CONNECTION must not be 'LCD'.
-    //#define SKR_USE_LCD_SD_CARD_PINS_FOR_CS
+    #define SKR_USE_LCD_SD_CARD_PINS_FOR_CS
     #if ENABLED(SKR_USE_LCD_SD_CARD_PINS_FOR_CS)
       #if SD_CONNECTION_IS(LCD)
         #error "SDCARD_CONNECTION must not be 'LCD' with SKR_USE_LCD_SD_CARD_PINS_FOR_CS."
       #endif
       #define X_CS_PIN                     P0_02
       #define Y_CS_PIN                     P0_03
-      #define Z_CS_PIN                     P2_06
+      #define Z_CS_PIN                     P1_31 // P2_06
       // We use SD_DETECT_PIN for E0
       #undef SD_DETECT_PIN
-      #define E0_CS_PIN                    P1_31
+      #define E0_CS_PIN                    P1_23 // P1_31
       // We use LCD_SDSS pin for E1
       #undef LCD_SDSS
       #define LCD_SDSS                     -1
-      #define E1_CS_PIN                    P1_23
+      // #define E1_CS_PIN                    P1_23
     #endif
 
     // Example 3: Use the driver enable pins for chip-select.
