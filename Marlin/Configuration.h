@@ -503,10 +503,10 @@
   //#define DEFAULT_Ki 2.25
   //#define DEFAULT_Kd 440
 
-  // CUSTOM // TODO: check
-  #define DEFAULT_Kp 14.3
-  #define DEFAULT_Ki 1.03
-  #define DEFAULT_Kd 49.83
+  // CUSTOM - PET-G 240
+  #define DEFAULT_Kp 14.51
+  #define DEFAULT_Ki 1.11
+  #define DEFAULT_Kd 47.59
 
 #endif // PIDTEMP
 
@@ -586,7 +586,7 @@
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 350
+#define EXTRUDE_MAXLENGTH 500
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
@@ -758,11 +758,11 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 200, 200, 10, 80 }
+#define DEFAULT_MAX_FEEDRATE          { 200, 200, 12, 80 }
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 300, 300, 12, 120 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 300, 300, 20, 120 } // ...or, set your own edit limits
 #endif
 
 /**
