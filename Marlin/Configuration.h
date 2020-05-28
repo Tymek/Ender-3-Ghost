@@ -503,10 +503,10 @@
   //#define DEFAULT_Ki 2.25
   //#define DEFAULT_Kd 440
 
-  // CUSTOM - PET-G 240
-  #define DEFAULT_Kp 14.51
-  #define DEFAULT_Ki 1.11
-  #define DEFAULT_Kd 47.59
+  // CUSTOM - PET-G 235 - 40W heater
+  #define DEFAULT_Kp 13.82
+  #define DEFAULT_Ki 1.12
+  #define DEFAULT_Kd 42.46
 
 #endif // PIDTEMP
 
