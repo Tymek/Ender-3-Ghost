@@ -208,7 +208,7 @@
       #endif
       #define X_CS_PIN                     P0_02
       #define Y_CS_PIN                     P0_03
-      #define Z_CS_PIN                     P1_31 // P2_06
+      // #define Z_CS_PIN                     P1_31 // P2_06
       // We use SD_DETECT_PIN for E0
       #undef SD_DETECT_PIN
       #define E0_CS_PIN                    P1_23 // P1_31

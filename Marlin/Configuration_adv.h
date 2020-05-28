@@ -2229,7 +2229,7 @@
    * Use for drivers that do not use a dedicated enable pin, but rather handle the same
    * function through a communication line such as SPI or UART.
    */
-  //#define SOFTWARE_DRIVER_ENABLE
+  #define SOFTWARE_DRIVER_ENABLE
 
   /**
    * TMC2130, TMC2160, TMC2208, TMC2209, TMC5130 and TMC5160 only
@@ -2292,7 +2292,7 @@
   #define Z2_HYBRID_THRESHOLD      3
   #define Z3_HYBRID_THRESHOLD      3
   #define Z4_HYBRID_THRESHOLD      3
-  #define E0_HYBRID_THRESHOLD     30
+  #define E0_HYBRID_THRESHOLD     30 // FIXME: check
   #define E1_HYBRID_THRESHOLD     30
   #define E2_HYBRID_THRESHOLD     30
   #define E3_HYBRID_THRESHOLD     30
@@ -2853,7 +2853,6 @@
   #define USER_SCRIPT_RETURN  // Return to status screen after a script
 
   #define USER_DESC_1 "Hotend cooldown"
-  #define USER_GCODE_1 "G28\nG29 W"
   #define USER_GCODE_1 "M106 S255\nG1 Z50\nM109 R" STRINGIFY(EXTRUDER_AUTO_FAN_TEMPERATURE) "\nM300 P100 S2000\nM106 S0\nM104 S0\nM300 P100 S1000"
 
   #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
